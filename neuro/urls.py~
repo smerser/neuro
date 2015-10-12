@@ -1,0 +1,11 @@
+from django.conf.urls import patterns, include, url
+
+from django.contrib import admin
+admin.autodiscover()
+
+urlpatterns = patterns('',
+    # Examples:
+    url(r'^all/$', 'main.views.show_all', name='show_all'),
+    url(r'^one/(?P<id>.+)/$', 'main.views.show_one', name='show_one'),
+    url(r'^admin/', include(admin.site.urls)),
+)

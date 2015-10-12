@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+
+<!--<script type="text/javascript" src="{% static "js/one.js" %}"></script>-->
+<script type="text/javascript" >
+
+$(document).ready(function(){
+
+// COPY CONTRENT FROM booking TO seneste
+  $("input#flyt").click(function(){
+     $("input#id_seneste").val($("input#id_booking").val());
+  });
+
+
+
+// GET PATIENT WITH CPR ON ENTER
+  $("input#txt").keypress(function(e){
+     var keycode = (e.keyCode ? e.keyCode: e.which);
+     if(e.which == 13) {
+       window.location.href = "/neuro/cpr/" + $(this).val();
+       }
+  });
+
+
+
+// ADD CALENDAR TO FIELDS
+  var picker = new Pikaday({
+     field: $("input#id_start")[0],
+     onOpen: function() { $("input#id_start").val(this.getMoment().format('YYYY-MM-DD')); }
+  });
+
+  var picker = new Pikaday({
+     field: $("input#id_seneste")[0],
+     onOpen: function() { $("input#id_seneste").val(this.getMoment().format('YYYY-MM-DD')); }
+  });
+
+  var picker = new Pikaday({
+     field: $("input#id_booking")[0],
+     onOpen: function() { $("input#id_booking").val(this.getMoment().format('YYYY-MM-DD')); }
+  });
+
+
+
+// RED COLOR ON DELAY
+$(window).load(function(){
+  if( $('input#id_delay').val() == 'False' )  
+    $('input#id_booking').css('color', 'red');
+});
+
+
+
+// ENABLE SAVE ON CHANGE
+  $("td").change(function(){
+     $("input#gem").prop('disabled', false);
+  });
+  
+// DISABLE SAVE ON PAGE LOAD
+  $("input#gem").prop('disabled', true);
+  
+  $("label[for=id_dr").text('Læge');
+
+
+});
+
+</script>
+
+<div align="center" >
+<div id="form">
+  <div style="color: blue; text-align: left; padding: 10px;">Rediger patient data:</div><br/>
+  <form method="POST" action="">{% csrf_token %}
+    {{ frm.management_form }}
+     <table>
+        {% for field in frm %}
+          <tr>
+          	<td align="left">{{ field.label_tag }}</td>
+          	{% if field.label == 'Booking' %}
+          		<td class="{{ delay }}"> {{ field }} <td>
+          		<tr><td>Næste</td><td>{{ nxt }}</td></tr>
+          	{% else %}
+          		<td> {{ field }} <td>
+			{% endif %}		   
+          </tr>
+        {% endfor %}
+      </tr>
+	
+    </table>
+  <hr/>
+  <input type="submit" value="Gem"        id="gem">
+  <input type="button" value="Slet"       id="del" onclick="if(confirm('Slet patient?')) window.location.href='{% url del_one id %}'">
+  <input type="button" value="List alle"  id="all" onclick="window.location.href='{% url show_all %}'">
+  <input type="button" value="Ny patient" id="add" onclick="window.location.href='{% url add_one %}'">
+  <input type="button" value="B => S"     id="flyt">
+  <br/><br/>
+  <label>Hent:&nbsp&nbsp</label><input type="text"   value=""           id="txt" placeholder="CPR:">
+  </form><br/>
+</div></div>
+<input id="id_delay"   value="{{ delay }}" hidden />
+
+{% endblock %}

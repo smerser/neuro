@@ -1,0 +1,42 @@
+{% load staticfiles %}
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script type="text/javascript" src="{% static "js/jquery.maskedinput.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/moment.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/pikaday.js" %}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{% static "css/pikaday.css" %}">
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+    $("input#id_cpr").mask("999999-9999");
+    $("input#txt").mask("999999-9999");
+
+  });
+</script>
+
+    <title>NeuroAmb</title>
+    <link rel="shortcut icon"     href="{% static "img/django_logo.png" %}" type="image/gif" />
+    <link rel="stylesheet"        href="{% static "css/base.css" %}"        type="text/css" />
+  </head>
+  <body>
+    <div id="top">
+    	<br/>
+      	Neurologisk Ambulatorium (Scleroseklinikken) Rigshospitalet
+      	<code>
+      		{% if user.is_superuser %}
+				<a href="{% url rapporter %}" id="topnav"> | rapport </a>
+			{% endif %}	
+      		<a href="{% url logout %}" id="topnav"> User: {{ user }} | logout </a>
+		</code>
+		<br/><br/>
+    </div><br/><br/>
+    	{% block content %}
+    	{% endblock  %}
+  </body>
+</html>

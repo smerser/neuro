@@ -1,0 +1,10 @@
+/* Neurologisk Ambulatorie. Merser 2015 */
+
+#top          { background-color: #6374AB; color: white; font-size: 200%; font-weight: bold; text-align: center; }
+a#topnav      { text-decoration: none; color: white; font-size: 50%; display: inline-block; float: right; padding: 10px }
+div#inner     { text-align: left; padding-left: 170px; }
+div#form      { background-color: #cccccc; width:600px; }
+div#list      { background-color: #cccccc; width:600px; }
+th            { text-align: left; }
+input#id_navn { width: 200px}
+label#hent    { width:100px; display: inline-block; }

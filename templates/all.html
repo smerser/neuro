@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load jsonify %}
+{% debug %}
+{% block content %}
+	<script type="text/javascript" src="{% static "js/jquery.cookie.js" %}"></script>
+	<script type="text/javascript">
+
+	$(document).ready(function(){
+
+		// LOGOUT
+			$("input#logout").click(function(){
+			  window.location='/logout/';
+			});
+
+		$("td.missing").css('color', 'red');
+		
+		
+		$("input.ia").each(function() {
+    		var mycookie = $.cookie($(this).attr('name'));
+    		if (mycookie && mycookie == "true") {
+        		$(this).prop('checked', mycookie);
+    		}
+		});
+		
+		$("input#ia").change(function() {
+    		$.cookie($(this).attr("name"), $(this).prop('checked'), { path: '/', expires: .00003 }); // expire days; 3*10^-4 = 2 seconds
+    		
+    		if( $(this).prop('checked') ) {
+            	window.location='{% url show_all 1 %}';
+            } else {
+            	window.location='{% url show_all %}';
+            }
+    		
+		});	
+	});
+
+
+
+		// Small Angular App
+		var my_app = angular.module("NeuroApp", []).config(function($interpolateProvider){
+		  $interpolateProvider.startSymbol('{$');
+		  $interpolateProvider.endSymbol('$}');
+		});
+
+		my_app.controller("AppCtrl", function($scope){
+		  $scope.patient_list = {{ patients|safe }};
+		});
+
+	</script>
+
+	<div align="center">
+	<div id="list" width="75%">
+	  <div style="color: blue; text-align: left; padding: 10px;">Listning:</div><br/>
+  
+	<div ng-app="NeuroApp" ng-controller="AppCtrl" class="container">
+
+	  <div id="nav-options">
+		<input type="text" size="50" class="form-control" placeholder="Søg:" ng-model="searchquery">
+		<div style="display: inline-block; float: right;">
+			<input type="button" onclick="window.location.href='/neuro/add/'" value="Ny patient">&nbsp&nbsp&nbsp
+			<input type="checkbox" class="ia" name="ia" id="ia" />
+		</div><br/>
+	  </div>
+	  <hr/>
+	  <table class="table">
+		<thead>
+		  <tr>
+			<th ng-click="sortBy='navn';  reverse=!reverse;" align='left'              > Navn    </th>
+			<th ng-click="sortBy='cpr';   reverse=!reverse;" align='left' width='100px'> CPR     </th>
+			<th ng-click="sortBy='dr';    reverse=!reverse;" align='left' width=' 80px'> Læge    </th>
+			<th ng-click="sortBy='delay'; reverse=!reverse;" align='left' width='150px'> Booking </th>
+			<th></th>
+		  </tr>
+		</thead>
+
+		<tbody>
+		  <tr ng-repeat="row in patient_list | filter:searchquery | orderBy:sortBy:reverse">
+			<td> {$ row.navn $}  </td>
+			<td> {$ row.cpr $}   </td>
+			<td> {$ row.dr $}    </td>
+
+			<td ng-show="row.delay == true">                  OK                   </td>
+			<td ng-show="row.delay == false" class='missing'> Interval overskredet </td>
+			<td ng-show="row.delay == 'missing'">             Mangler info         </td>
+
+			<td> <a ng-href="/neuro/one/{$ row.id $}"> Hent </a>  </td>
+		  </tr>
+	  </tbody>
+	  </table><br/>
+	</div></div></div>
+
+{% endblock %}
+

@@ -1,0 +1,13 @@
+*.sqlite3
+KLADDE
+rscripts/.Rproj.user/
+rscripts.Rproj
+rscripts/auto/
+.Rhistory
+.RData
+*.pyc
+*.tex
+*.pdf
+*.log
+*.aux
+tmp.R

@@ -1,0 +1,63 @@
+ {% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+<!--	<script type="text/javascript" src="{% static "js/add.js" %}"></script> -->
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+    
+  $("input#gem").prop('disabled', true);
+
+  $("td").change(function(){
+    $("input#gem").prop('disabled', false);
+  });
+
+  $("label[for=id_dr").text('Læge');
+
+// GET PATIENT WITH CPR ON ENTER
+  $("input#txt").keypress(function(e){
+     var keycode = (e.keyCode ? e.keyCode: e.which);
+     if(e.which == 13) {
+       window.location.href = '/neuro/cpr/' + $(this).val();
+       }
+  });
+
+
+
+  var picker = new Pikaday({
+     field: $("input#id_start")[0],
+     onOpen: function() { $("input#id_start").val(this.getMoment().format('YYYY-MM-DD')); }
+  });
+
+  var picker = new Pikaday({
+     field: $("input#id_seneste")[0],
+     onOpen: function() { $("input#id_seneste").val(this.getMoment().format('YYYY-MM-DD')); }
+  });
+
+  var picker = new Pikaday({
+     field: $("input#id_booking")[0],
+     onOpen: function() { $("input#id_booking").val(this.getMoment().format('YYYY-MM-DD')); }
+  });
+
+ });
+
+</script>
+
+<div align="center">
+<div id="form">
+  <div style="color: blue; text-align: left; padding: 10px;">Opret nyt patientforløb:</div><br/>
+  <form method="POST" action="{% url add_one %}">{% csrf_token %}
+    {{ frm.management_form }}
+    
+  <table>
+    {{ frm }}
+  </table>
+  <hr/>
+  <input type="submit" value="Gem"                 id="gem" onclick="return confirm('Gem ny patient?')">
+  <input type="button" value="List alle"           id="all" onclick="window.location.href='{% url show_all %}'">
+  <br/><br/>
+  <label>Hent:&nbsp&nbsp</label><input type="text" id="txt" placeholder="CPR:" value="">
+  </form><br/>
+</div></div>
+ {% endblock %}

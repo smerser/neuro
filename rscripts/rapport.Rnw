@@ -1,0 +1,72 @@
+%%
+%% Merser, 2015
+%%
+\documentclass[a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[danish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{Sweave}
+\usepackage{longtable}
+
+\begin{document}
+
+<<init, echo=FALSE, results=hide>>=
+require(Hmisc)
+require(dplyr)
+STATCOM <- FALSE
+if (STATCOM){
+    ## CONNECT STATCOM
+    source('db.R')
+} else {
+    ## CONNECT MAC
+    require(RSQLite)
+    con <- dbConnect(SQLite(), dbname='~/neuro.sqlite3')
+}
+
+## GET DATA AND DISCONNECT
+ptt <- dbGetQuery(con, "SELECT * FROM main_patienter")
+dbDisconnect(con)
+
+## DATA PREPARE
+ptt$navn <- iconv(ptt$navn, "latin1", "UTF-8")
+ptt <-  
+mutate(ptt, delay=as.numeric((as.Date(booking)-as.Date(seneste))-interval)) %>%
+mutate(delay=ifelse(delay < 0, 'OK', delay)) %>% 
+mutate(delay=ifelse(is.na(delay), 'Info mangler', delay)) %>%
+filter(active=='Active') %>%
+arrange(doc) %>%
+select(navn, CPR, doc, diagnose, delay)
+
+@
+
+<<lst, echo=FALSE, results=tex>>=
+cat('Valg:\\\\')
+
+if(nchar(dr)>0){
+	cat(paste('Læge: ', dr, '\\\\'))
+	ptt <- filter(ptt, doc==dr)
+	}
+	
+if(nchar(dg)>0){
+	cat(paste('Diagnose: ', dg, '\\\\'))
+	ptt <- filter(ptt, diagnose==dg)
+	}
+	
+if(dl=='on'){
+	cat(paste('Patienter med overskredet kontrolinterval'))
+	ptt <- filter(ptt, as.numeric(delay)>0)
+	}
+
+if(nrow(ptt)==0) {
+	cat(paste('Ingen patienter tilknyttet læge:', dr))
+} else {
+	latex(ptt, file='', longtable=T, rowname=NULL)
+}
+@
+
+<<bye, echo=FALSE, results=tex>>=
+cat(paste('\\\\[20mm]This is all folks!!\\\\Regards from', dr))
+@ 
+
+
+\end{document}

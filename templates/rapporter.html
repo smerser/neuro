@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+
+<script type="text/javascript" >
+
+$(document).ready(function(){
+
+$("imput#dr").click(function{
+	window.location.href="neuro/rapport";
+});
+
+</script>
+
+	<div align="center" >
+	<div id="form">
+	{% csrf_token %}
+	  <div style="color: blue; text-align: left; padding: 10px;">Rapport:</div><br/>
+	  <form method="POST" action="{% url rscript %}">
+	  {% csrf_token %}
+		<div id="inner">
+		<label>Vælg læge:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
+		<input type="text" name="dr" id="dr"  placeholder="Læge:" />
+		<br/><br/>
+		<label>Vælg diagnose:&nbsp&nbsp</label>
+		<input type="text" name="dg" id="dg"  placeholder="Diagnose:" />
+		<br/><br/>
+		<label>Kontrolinterval overskredet: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
+		<input type="checkbox" name="dl" id="dl" />
+		<br/><br/>
+		<label>Medtag de inaktive patienter:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
+		<input type="checkbox" name="ia" id="ia" />
+		<br/><br/>
+	  </div><hr>
+		<input type="submit" value="Hent rapport" />&nbsp&nbsp&nbsp&nbsp&nbsp
+		<input type="button" value="List alle" onclick="window.location.href='{% url show_all %}'" />
+	  </form><br/>
+	</div></div>
+	
+  </form><br/>
+</div></div>
+
+{% endblock %}
