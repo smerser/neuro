@@ -17,3 +17,10 @@ git pull https://github.com/smerser/neuro.git
 # sync
 git push -u origin master
 git status
+
+# In .gitignore add
+neuro/settings.py
+
+# Don't update settings.py
+git update-index --assume-unchanged neuro/settings.py
+git commit -a -m 'Ignore changes to settings.py'
