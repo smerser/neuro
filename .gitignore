@@ -1,5 +1,6 @@
 *.sqlite3
 KLADDE
+neuro/settings.py
 rscripts/.Rproj.user/
 rscripts.Rproj
 rscripts/auto/
