@@ -1,6 +1,8 @@
 *.sqlite3
 KLADDE
 neuro/settings.py
+rscripts/packrat/
+rscripts/.Rprofile
 rscripts/.Rproj.user/
 rscripts.Rproj
 rscripts/auto/
@@ -12,3 +14,4 @@ rscripts/auto/
 *.log
 *.aux
 tmp.R
+.Rproj.user
