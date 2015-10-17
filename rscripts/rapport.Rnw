@@ -43,24 +43,24 @@ select(navn, CPR, doc, diagnose, delay)
 cat('Valg:\\\\')
 
 if(nchar(dr)>0){
-	cat(paste('Læge: ', dr, '\\\\'))
-	ptt <- filter(ptt, doc==dr)
-	}
-	
+    cat(paste('Læge: ', dr, '\\\\'))
+    ptt <- filter(ptt, doc==dr)
+    }
+    
 if(nchar(dg)>0){
-	cat(paste('Diagnose: ', dg, '\\\\'))
-	ptt <- filter(ptt, diagnose==dg)
-	}
-	
+    cat(paste('Diagnose: ', dg, '\\\\'))
+    ptt <- filter(ptt, diagnose==dg)
+    }
+    
 if(dl=='on'){
-	cat(paste('Patienter med overskredet kontrolinterval'))
-	ptt <- filter(ptt, as.numeric(delay)>0)
-	}
+    cat(paste('Patienter med overskredet kontrolinterval'))
+    ptt <- filter(ptt, as.numeric(delay)>0)
+    }
 
 if(nrow(ptt)==0) {
-	cat(paste('Ingen patienter tilknyttet læge:', dr))
+    cat(paste('Ingen patienter tilknyttet læge:', dr))
 } else {
-	latex(ptt, file='', longtable=T, rowname=NULL)
+    latex(ptt, file='', longtable=T, rowname=NULL)
 }
 @
 

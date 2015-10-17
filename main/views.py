@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -23,7 +27,7 @@ from main.models import patienter, dr, patientForm
 
 @login_required
 def rapporter(request):
-	return render_to_response('rapporter.html',  context_instance=RequestContext(request))
+    return render_to_response('rapporter.html',  context_instance=RequestContext(request))
 
 
 
@@ -36,18 +40,18 @@ def rscript(request):
     pd = request.POST
     
     if pd.get('dl') == 'on':
-    	ptt = patienter.objects.extra(where=["( (strftime('%%s', booking) - strftime('%%s', seneste)) / 86400) > interval"],)
+        ptt = patienter.objects.extra(where=["( (strftime('%%s', booking) - strftime('%%s', seneste)) / 86400) > interval"],)
     else:
-    	ptt = patienter.objects.all()
+        ptt = patienter.objects.all()
     
     if pd.get('ia') == None:
-    	ptt = ptt.exclude(active="Inactive")
+        ptt = ptt.exclude(active="Inactive")
     
     if pd.get('dr'):  
-    	ptt = ptt.filter(doc=pd.get('dr'))
+        ptt = ptt.filter(doc=pd.get('dr'))
 
     if pd.get('dg'):
-    	ptt = ptt.filter(diagnose=pd.get('dg'))
+        ptt = ptt.filter(diagnose=pd.get('dg'))
     
     ## ROW AND COLUMN SETUP
     nl    =  15
@@ -63,31 +67,31 @@ def rscript(request):
     p = canvas.Canvas(response)
     
     for x in ptt:
-    	if ypos == 780:		## Headers
-    		p.setFont("Helvetica", 8)
-    		p.drawString(c1pos, ypos, 'Navn')
-    		p.drawString(c2pos, ypos, 'CPR')
-    		p.drawString(c3pos, ypos, 'Lage')
-    		p.drawString(c4pos, ypos, 'Diagnose')
-    		p.drawString(c5pos, ypos, 'Booking')
-    		p.line(120, 770, 500, 770)
-    		ypos -= 30
-    	p.drawString(c1pos, ypos, x.navn)
-    	p.drawString(c2pos, ypos, x.cpr)
-    	p.drawString(c3pos, ypos, x.doc)
-    	p.drawString(c4pos, ypos, x.diagnose)
-    	if not x.gtdl:
-    		p.setFillColorRGB(255,0,0)	# set font color
-    		p.drawString(c5pos, ypos, 'For sent')
-    		p.setFillColorRGB(0,0,0)	# reset font colour
-    	elif x.gtdl == 'missing':
-    		p.drawString(c5pos, ypos, 'Info mangler')
-    	else:
-    		p.drawString(c5pos, ypos, 'OK')
-    	ypos -= nl
-    	if ypos < 80:	## New page
-    		p.showPage()
-    		ypos = 780
+        if ypos == 780:     ## Headers
+            p.setFont("Helvetica", 8)
+            p.drawString(c1pos, ypos, 'Navn')
+            p.drawString(c2pos, ypos, 'CPR')
+            p.drawString(c3pos, ypos, 'Lage')
+            p.drawString(c4pos, ypos, 'Diagnose')
+            p.drawString(c5pos, ypos, 'Booking')
+            p.line(120, 770, 500, 770)
+            ypos -= 30
+        p.drawString(c1pos, ypos, x.navn)
+        p.drawString(c2pos, ypos, x.cpr)
+        p.drawString(c3pos, ypos, x.doc)
+        p.drawString(c4pos, ypos, x.diagnose)
+        if not x.gtdl:
+            p.setFillColorRGB(255,0,0)  # set font color
+            p.drawString(c5pos, ypos, 'For sent')
+            p.setFillColorRGB(0,0,0)    # reset font colour
+        elif x.gtdl == 'missing':
+            p.drawString(c5pos, ypos, 'Info mangler')
+        else:
+            p.drawString(c5pos, ypos, 'OK')
+        ypos -= nl
+        if ypos < 80:   ## New page
+            p.showPage()
+            ypos = 780
 
     # Close the PDF object cleanly, and we're done.
     p.showPage()
@@ -121,13 +125,13 @@ def rscript(request):
 
 @login_required
 def show_all(request, all=None):
-	if not all:
-		a = patienter.objects.filter(active='Active')
-	else:
-		a = patienter.objects.all()
-	a = [{'id': x.id, 'navn': x.navn, 'cpr': x.cpr, 'dr': str(x.dr), 'delay': x.gtdl} for x in a]   ## , 'tid': str(x.booking) ## str(dr.objects.get(pk=x.dr_id))
-	a = json.dumps(a)
-	return render_to_response('all.html', {'patients': a}, context_instance=RequestContext(request))
+    if not all:
+        a = patienter.objects.filter(active='Active')
+    else:
+        a = patienter.objects.all()
+    a = [{'id': x.id, 'navn': x.navn, 'cpr': x.cpr, 'dr': str(x.dr), 'delay': x.gtdl} for x in a]   ## , 'tid': str(x.booking) ## str(dr.objects.get(pk=x.dr_id))
+    a = json.dumps(a)
+    return render_to_response('all.html', {'patients': a}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -139,10 +143,10 @@ def show_one(request, id=id):
         if frm.is_valid():
             frm.save()
     try:
-    	nxt = a.seneste + timedelta(days=a.interval)
-    	nxt = str(nxt) + ', uge: ' + nxt.strftime("%W")
+        nxt = a.seneste + timedelta(days=a.interval)
+        nxt = str(nxt) + ', uge: ' + nxt.strftime("%W")
     except:
-    	nxt = ''
+        nxt = ''
     return render_to_response('one.html', {'frm': frm, 'id': id, 'delay': a.gtdl, 'nxt': nxt}, context_instance=RequestContext(request))
 
 
@@ -183,27 +187,27 @@ class LoginForm(forms.Form):
 
 def login_page(request):
         if request.user.is_authenticated():
-		return HttpResponseRedirect("/neuro/all/")
-	message = None
-	if request.method == "POST":
-		form = LoginForm(request.POST)
-		if form.is_valid():
-			username = request.POST['username']
-			password = request.POST['password']
-			user = authenticate(username=username, password=password)
-			if user is not None:
-				if user.is_active:
-					login(request, user)
-					return HttpResponseRedirect("/neuro/all/")
-				else:
-					message = "User inactive"
-			else:
-				message = "Invalid username and/or password"
-	else:
-		form = LoginForm()
-	return render_to_response('login.html', {'message': message, 'form': form}, context_instance=RequestContext(request))
-	
-	
+        return HttpResponseRedirect("/neuro/all/")
+    message = None
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return HttpResponseRedirect("/neuro/all/")
+                else:
+                    message = "User inactive"
+            else:
+                message = "Invalid username and/or password"
+    else:
+        form = LoginForm()
+    return render_to_response('login.html', {'message': message, 'form': form}, context_instance=RequestContext(request))
+    
+    
 def logout_page(request):
     logout(request)
     return HttpResponseRedirect("/neuro/")
